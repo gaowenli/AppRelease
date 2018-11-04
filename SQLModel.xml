@@ -1,0 +1,524 @@
+<xml xmlns:s='uuid:BDC6E3F0-6DA3-11d1-A2A3-00AA00C14882'
+	xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882'
+	xmlns:rs='urn:schemas-microsoft-com:rowset'
+	xmlns:z='#RowsetSchema'>
+<s:Schema id='RowsetSchema'>
+	<s:ElementType name='row' content='eltOnly' rs:updatable='true'>
+		<s:AttributeType name='id' rs:number='1' rs:nullable='true' rs:write='true'>
+			<s:datatype dt:type='string' rs:dbtype='str' dt:maxLength='38' rs:precision='0'/>
+		</s:AttributeType>
+		<s:AttributeType name='parentid' rs:number='2' rs:nullable='true' rs:write='true'>
+			<s:datatype dt:type='string' rs:dbtype='str' dt:maxLength='38' rs:precision='0'/>
+		</s:AttributeType>
+		<s:AttributeType name='Title' rs:number='3' rs:nullable='true' rs:write='true'>
+			<s:datatype dt:type='string' rs:dbtype='str' dt:maxLength='100' rs:precision='0'/>
+		</s:AttributeType>
+		<s:AttributeType name='SQLScript' rs:number='4' rs:nullable='true' rs:write='true'>
+			<s:datatype dt:type='string' rs:dbtype='str' dt:maxLength='2147483647' rs:precision='0' rs:long='true'/>
+		</s:AttributeType>
+		<s:extends type='rs:rowbase'/>
+	</s:ElementType>
+</s:Schema>
+<rs:data>
+	<rs:insert>
+		<z:row id='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='SQL编程模板' rs:forcenull='parentid'/>
+		<z:row id='8AF376E4-E613-42DC-BFA7-0995A798E24A' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='存贮过程模板'/>
+		<z:row id='EDDBAB9A-5B68-4CBF-AE00-8D80253F511C' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='创建函数'/>
+		<z:row id='59AC71F2-962B-431E-97B7-9E30AE6EE8FE' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='光标使用模板'/>
+		<z:row id='468681C7-8935-42A1-9FFD-54C55E6582A2' parentid='59AC71F2-962B-431E-97B7-9E30AE6EE8FE' Title='Declare and using a READ_ONLY cursor'
+			 SQLScript='-- =============================================
+-- Declare and using a READ_ONLY cursor
+-- =============================================
+DECLARE &#x3c;cursor_name, sysname, test_cursor&#x3e; CURSOR
+READ_ONLY
+FOR &#x3c;select_statement, , SELECT au_fname FROM pubs.dbo.authors&#x3e;
+
+DECLARE @name varchar(40)
+OPEN &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO @name
+WHILE (@@fetch_status &#x3c;&#x3e; -1)
+BEGIN
+	IF (@@fetch_status &#x3c;&#x3e; -2)
+	BEGIN
+--		PRINT &#x27;add user defined code here&#x27;
+--		eg.
+		DECLARE @message varchar(100)
+		SELECT @message = &#x27;my name is: &#x27; + @name
+		PRINT @message
+	END
+	FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO @name
+END
+
+CLOSE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+DEALLOCATE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+GO
+
+
+'/>
+		<z:row id='3666153B-6600-4AEC-A3C1-B1C1EF073BF7' parentid='59AC71F2-962B-431E-97B7-9E30AE6EE8FE' Title='Declare and using a KEYSET cursor'
+			 SQLScript='-- =============================================
+-- Declare and using a KEYSET cursor
+-- =============================================
+DECLARE &#x3c;cursor_name, sysname, test_cursor&#x3e; CURSOR
+KEYSET
+FOR &#x3c;select_statement, , SELECT au_fname FROM pubs.dbo.authors&#x3e;
+
+DECLARE @name varchar(40)
+
+OPEN &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO @name
+WHILE (@@fetch_status &#x3c;&#x3e; -1)
+BEGIN
+	IF (@@fetch_status &#x3c;&#x3e; -2)
+	BEGIN
+--		PRINT &#x27;add user defined code here&#x27; 
+--		eg.
+		PRINT &#x27;updating record for &#x27; + @name
+		UPDATE pubs.dbo.authors 
+		SET phone = replace(phone, &#x27; &#x27;, &#x27;-&#x27;)
+		WHERE CURRENT OF &#x3c;cursor_name, sysname, test_cursor&#x3e;
+	END
+	FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO @name
+END
+
+CLOSE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+DEALLOCATE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+GO
+
+'/>
+		<z:row id='4D24BE01-C550-43DF-9CF2-FBA9EC4D3260' parentid='59AC71F2-962B-431E-97B7-9E30AE6EE8FE' Title='Declare a SCROLL cursor and use various FETCH options'
+			 SQLScript='-- =============================================
+-- Declare a SCROLL cursor and use various FETCH options
+-- =============================================
+DECLARE &#x3c;cursor_name, sysname, test_cursor&#x3e; SCROLL CURSOR FOR
+&#x3c;select_statement, , SELECT * FROM pubs.dbo.authors&#x3e;
+
+OPEN &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the first row in the cursor.
+FETCH FIRST FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the last row in the cursor.
+FETCH LAST FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the row immediately prior to the current row in the cursor.
+FETCH PRIOR FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the row immediately after the current row in the cursor.
+FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the nth row in the cursor.
+FETCH ABSOLUTE &#x3c;row_number, int, 8&#x3e; FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+-- Fetch the row that is n rows before or after the current row.
+FETCH RELATIVE &#x3c;-/+ row_number, int, -2&#x3e; FROM &#x3c;cursor_name, sysname, test_cursor&#x3e;
+
+CLOSE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+DEALLOCATE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+GO
+
+'/>
+		<z:row id='E692D02B-3519-4825-B55C-1D47E42EDA63' parentid='59AC71F2-962B-431E-97B7-9E30AE6EE8FE' Title='Declare and using an UPDATE cursor'
+			 SQLScript='-- =============================================
+-- Declare and using an UPDATE cursor
+-- =============================================
+DECLARE &#x3c;@variable_1, sysname, @v1&#x3e; &#x3c;datatype_for_variable_1, sysname, varchar(20)&#x3e;, 
+	&#x3c;@variable_2, sysname, @v2&#x3e; &#x3c;datatype_for_variable_2, sysname, varchar(40)&#x3e;
+
+DECLARE	&#x3c;cursor_name, sysname, test_cursor&#x3e; CURSOR 
+FOR SELECT &#x3c;column_1, sysname, au_fname&#x3e;, &#x3c;column_2, sysname, au_lname&#x3e; FROM &#x3c;table_name, sysname, pubs.dbo.authors&#x3e;
+FOR UPDATE of &#x3c;column_1, sysname, au_fname&#x3e;
+
+DECLARE @count smallint
+SELECT @count = 1
+
+OPEN &#x3c;cursor_name, sysname, test_cursor&#x3e;
+FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO &#x3c;@variable_1, sysname, @v1&#x3e;, &#x3c;@variable_2, sysname, @v2&#x3e;
+
+WHILE (@@fetch_status &#x3c;&#x3e; -1)
+BEGIN
+	IF (@@fetch_status &#x3c;&#x3e; -2)
+	BEGIN
+--		PRINT	&#x27;add user-defined code here...&#x27;
+--		eg
+		PRINT &#x27;updating record of &#x27; + @v1 + &#x27; &#x27; + @v2
+		UPDATE pubs.dbo.authors
+		SET au_fname = @v1 + &#x27;-&#x27; + CAST(@count AS varchar(4))
+		WHERE au_lname = @v2
+	END
+	FETCH NEXT FROM &#x3c;cursor_name, sysname, test_cursor&#x3e; INTO &#x3c;@variable_1, sysname, @v1&#x3e;, &#x3c;@variable_2, sysname, @v2&#x3e;
+	SELECT @count = @count + 1
+END
+
+CLOSE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+DEALLOCATE &#x3c;cursor_name, sysname, test_cursor&#x3e;
+GO
+
+'/>
+		<z:row id='2D18440F-4ED1-47E1-B971-4831229135D1' parentid='8AF376E4-E613-42DC-BFA7-0995A798E24A' Title='Create procedure basic template'
+			 SQLScript='
+-- =============================================
+-- Create procedure basic template
+-- =============================================
+-- creating the store procedure
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;procedure_name, sysname, proc_test&#x3e;&#x27; 
+	   AND 	  type = &#x27;P&#x27;)
+    DROP PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e;
+GO
+
+CREATE PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e; 
+	&#x3c;@param1, sysname, @p1&#x3e; &#x3c;datatype_for_param1, , int&#x3e; = &#x3c;default_value_for_param1, , 0&#x3e;, 
+	&#x3c;@param2, sysname, @p2&#x3e; &#x3c;datatype_for_param2, , int&#x3e; = &#x3c;default_value_for_param2, , 0&#x3e;
+AS
+	SELECT @p1, @p2
+GO
+
+-- =============================================
+-- example to execute the store procedure
+-- =============================================
+EXECUTE &#x3c;procedure_name, sysname, proc_test&#x3e; &#x3c;value_for_param1, , 1&#x3e;, &#x3c;value_for_param2, , 2&#x3e;
+GO
+
+'/>
+		<z:row id='AAF51289-E2C9-4BC5-94E2-D372EE542000' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='创建表'/>
+		<z:row id='02F98C8E-4840-4830-B41A-4E5289696B20' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='70549620-1014-475A-87DF-84430F1FAF72' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='7385E9A0-8359-4A7B-AB7B-567D4C4BDAF5' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='28CE091A-0AC5-4D17-A856-9E436E55D221' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='D7F5D350-3D52-4201-9449-829E547F7301' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='D81E035C-14DE-4659-9EDA-893C591318C9' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='C4ABB70E-2131-4CEC-A9CE-C8B58E286F07' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='01523D80-9355-4466-A39A-2DD3EED7955D' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='F1E31D16-5F01-45FA-84A0-DB1E3A4C0F7C' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='6FE9A0C0-30FF-4889-9F2E-64E27D815C41' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='F29CB63A-DE66-46FA-A239-89169B9E756B' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='EDD23A99-4371-424B-8813-04F73E088C04' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='E7396AFB-524F-4010-AA1C-DC01AF1B99BB' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='59895625-824F-4089-93DE-E1D3D3A4EB20' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='2BF66486-07AB-4B55-A25B-9F17E9A33013' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='AA95A5E1-3BA0-40FA-AB20-8EF7578C5812' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='新SQL模板'/>
+		<z:row id='5BD1DFE1-A27B-4611-85D1-04CA190E5B41' parentid='BD15DE26-4FE6-4861-8605-48317F2B559C' Title='创建统计对象'/>
+		<z:row id='0E7314B3-F355-44D9-90AC-8017F13B4D80' parentid='5BD1DFE1-A27B-4611-85D1-04CA190E5B41' Title='Create Statistics Template'
+			 SQLScript='-- =============================================
+-- Create Statistics Template
+-- =============================================
+CREATE STATISTICS &#x3c;statistics_name, sysname, stats_test&#x3e; 
+ON &#x3c;table_name, sysname, t1&#x3e; 
+	(&#x3c;column_list, sysname, c1&#x3e;)
+WITH
+SAMPLE &#x3c;percentage, , 50&#x3e; PERCENT
+GO
+
+'/>
+		<z:row id='C3D8F44B-B46B-4C06-82B9-19C0A3CD6C4C' parentid='8AF376E4-E613-42DC-BFA7-0995A798E24A' Title='Create procedure with CURSOR OUTPUT Parameters'
+			 SQLScript='-- =============================================
+-- Create procedure with CURSOR OUTPUT Parameters
+-- =============================================
+-- drop the store procedure if it already exists
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;procedure_name, sysname, proc_test&#x3e;&#x27; 
+	   AND 	  type = &#x27;P&#x27;)
+	DROP PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e;
+GO
+
+
+-- create the store procedure 
+CREATE PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e; 
+	&#x3c;@proc_cursor_name, , @proc_test_cursor&#x3e; CURSOR VARYING OUTPUT
+AS
+SET &#x3c;@proc_cursor_name, , @proc_test_cursor&#x3e; = CURSOR FOR
+	&#x3c;select_statement, , select 1&#x3e;
+OPEN &#x3c;@proc_cursor_name, , @proc_test_cursor&#x3e;
+GO
+
+
+-- =============================================
+-- example to execute the store procedure
+-- =============================================
+DECLARE &#x3c;@variable_cursor_name, , @test_cursor_variable&#x3e; CURSOR
+
+EXEC &#x3c;procedure_name, sysname, proc_test&#x3e; &#x3c;@proc_cursor_name, , @proc_test_cursor&#x3e; = &#x3c;@variable_cursor_name, , @test_cursor_variable&#x3e; OUTPUT
+
+WHILE (@@FETCH_STATUS = 0)
+BEGIN
+    FETCH NEXT FROM &#x3c;@variable_cursor_name, , @test_cursor_variable&#x3e;
+    PRINT &#x27;put user defined code here&#x27;
+END
+
+CLOSE &#x3c;@variable_cursor_name, , @test_cursor_variable&#x3e;
+
+DEALLOCATE &#x3c;@variable_cursor_name, , @test_cursor_variable&#x3e;
+GO
+
+'/>
+		<z:row id='191A92F8-8FFF-4E0A-B9B7-57DA65D2F4EC' parentid='8AF376E4-E613-42DC-BFA7-0995A798E24A' Title='Create procedure with OUTPUT Parameters'
+			 SQLScript='-- =============================================
+-- Create procedure with OUTPUT Parameters
+-- =============================================
+-- creating the store procedure
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;procedure_name, sysname, proc_test&#x3e;&#x27; 
+	   AND 	  type = &#x27;P&#x27;)
+    DROP PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e;
+GO
+
+CREATE PROCEDURE &#x3c;procedure_name, sysname, proc_test&#x3e; 
+	&#x3c;@param1, sysname, @p1&#x3e; &#x3c;datatype_for_param1, , int&#x3e; = &#x3c;default_value_for_param1, , 0&#x3e;, 
+	&#x3c;@param2, sysname, @p2&#x3e; &#x3c;datatype_for_param2, , int&#x3e;  OUTPUT
+AS
+	SELECT @p2 = @p2 + @p1
+GO
+
+-- =============================================
+-- example to execute the store procedure
+-- =============================================
+DECLARE &#x3c;@variable_for_output_parameter, sysname, @p2_output&#x3e; &#x3c;datatype_for_output_parameter, , int&#x3e;
+EXECUTE &#x3c;procedure_name, sysname, proc_test&#x3e; &#x3c;value_for_param1, , 1&#x3e;, &#x3c;@variable_for_output_parameter, sysname, @p2_output&#x3e; OUTPUT
+SELECT &#x3c;@variable_for_output_parameter, sysname, @p2_output&#x3e;
+GO
+
+'/>
+		<z:row id='9E64B19A-E402-473D-BF18-F1CB6B4D684F' parentid='EDDBAB9A-5B68-4CBF-AE00-8D80253F511C' Title='Create inline function (IF)'
+			 SQLScript='-- =============================================
+-- Create inline function (IF)
+-- =============================================
+IF EXISTS (SELECT * 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;inline_function_name, sysname, test_function&#x3e;&#x27;)
+	DROP FUNCTION &#x3c;inline_function_name, sysname, test_function&#x3e;
+GO
+
+CREATE FUNCTION &#x3c;inline_function_name, sysname, test_function&#x3e; 
+	(&#x3c;@param1, sysname, @p1&#x3e; &#x3c;data_type_for_param1, , int&#x3e;, 
+	 &#x3c;@param2, sysname, @p2&#x3e; &#x3c;data_type_for_param2, , char&#x3e;)
+RETURNS TABLE 
+AS
+	RETURN SELECT   @p1 AS c1, 
+			@p2 AS c2
+GO
+
+-- =============================================
+-- Example to execute function
+-- =============================================
+SELECT * 
+FROM &#x3c;owner, , dbo&#x3e;.&#x3c;inline_function_name, sysname, test_function&#x3e; 
+	(&#x3c;value_for_@param1, , 1&#x3e;, 
+	 &#x3c;value_for_@param2, , &#x27;a&#x27;&#x3e;)
+GO
+
+'/>
+		<z:row id='B35410B0-A230-4D6D-9B21-400BCAC48B5A' parentid='8AF376E4-E613-42DC-BFA7-0995A798E24A' Title='新SQL模板'/>
+		<z:row id='69499448-987B-40C4-B636-EC489345C01C' parentid='EDDBAB9A-5B68-4CBF-AE00-8D80253F511C' Title='Create scalar function (FN)'
+			 SQLScript='-- =============================================
+-- Create scalar function (FN)
+-- =============================================
+IF EXISTS (SELECT * 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;scalar_function_name, sysname, test_function&#x3e;&#x27;)
+	DROP FUNCTION &#x3c;scalar_function_name, sysname, test_function&#x3e;
+GO
+
+CREATE FUNCTION &#x3c;scalar_function_name, sysname, test_function&#x3e; 
+	(&#x3c;@param1, sysname, @p1&#x3e; &#x3c;data_type_for_param1, , int&#x3e;, 
+	 &#x3c;@param2, sysname, @p2&#x3e; &#x3c;data_type_for_param2, , int&#x3e;)
+RETURNS &#x3c;function_data_type, ,int&#x3e;
+AS
+BEGIN
+	&#x3c;function_body, , RETURN @p1 + @p2 &#x3e;
+--	eg.
+--	DECLARE @sum AS int
+--	SELECT @sum = @p1 + @P2
+--	RETURN @sum
+END
+GO
+
+-- =============================================
+-- Example to execute function
+-- =============================================
+SELECT &#x3c;owner, , dbo&#x3e;.&#x3c;scalar_function_name, sysname, test_function&#x3e; 
+	(&#x3c;value_for_@param1, , 1&#x3e;, 
+	 &#x3c;value_for_@param2, , 2&#x3e;)
+GO
+
+'/>
+		<z:row id='25980753-E116-4BF0-9613-2EC79DB29BDE' parentid='EDDBAB9A-5B68-4CBF-AE00-8D80253F511C' Title='Create table function (TF)'
+			 SQLScript='-- =============================================
+-- Create table function (TF)
+-- =============================================
+IF EXISTS (SELECT * 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_function_name, sysname, test_function&#x3e;&#x27;)
+	DROP FUNCTION &#x3c;table_function_name, sysname, test_function&#x3e;
+GO
+
+CREATE FUNCTION &#x3c;table_function_name, sysname, test_function&#x3e; 
+	(&#x3c;@param1, sysname, @p1&#x3e; &#x3c;data_type_for_param1, , int&#x3e;, 
+	 &#x3c;@param2, sysname, @p2&#x3e; &#x3c;data_type_for_param2, , char&#x3e;)
+RETURNS &#x3c;@table_variable_name, sysname, @table_var&#x3e; TABLE 
+	(&#x3c;column_1, sysname, c1&#x3e; &#x3c;data_type_for_column1, , int&#x3e;, 
+	 &#x3c;column_2, sysname, c2&#x3e; &#x3c;data_type_for_column2, , int&#x3e;)
+AS
+BEGIN
+	INSERT &#x3c;@table_variable_name, sysname, @table_var&#x3e;
+	SELECT 1, 2
+	RETURN 
+END
+GO
+
+-- =============================================
+-- Example to execute function
+-- =============================================
+SELECT * FROM &#x3c;owner, , dbo&#x3e;.&#x3c;table_function_name, sysname, test_function&#x3e;
+	(&#x3c;value_for_@param1, , 1&#x3e;, 
+	 &#x3c;value_for_@param2, , 2&#x3e;)
+GO
+
+'/>
+		<z:row id='B5C9A8C2-9D85-4A43-99DA-F2896FE8863A' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table basic template'
+			 SQLScript='-- =============================================
+-- Create table basic template
+-- =============================================
+IF EXISTS(SELECT name 
+	  FROM 	 sysobjects 
+	  WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	  AND 	 type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+CREATE TABLE &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; &#x3c;datatype_for_column_1, , int&#x3e; NULL, 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, , int&#x3e; NOT NULL)
+GO
+
+'/>
+		<z:row id='F3A58F84-A3E5-46DD-9DDA-E6DBE5875B80' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table specify constraints'
+			 SQLScript='-- =============================================
+-- Create table specify constraints
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND    type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+CREATE TABLE &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; &#x3c;datatype_for_column_1, , int&#x3e; NOT NULL, 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, , int&#x3e; NOT NULL
+	CONSTRAINT &#x3c;column_constraint, sysname, check_c2&#x3e; CHECK(c2 &#x3e; 0),
+CONSTRAINT &#x3c;table_constraint, sysname, pk_c1&#x3e; PRIMARY KEY (c1) )
+GO
+
+'/>
+		<z:row id='1549D656-7A6F-4B53-B5A5-CEE75DB8BE39' parentid='02F98C8E-4840-4830-B41A-4E5289696B20' Title='保存到临时表'
+			 SQLScript='-- 保存到临时表
+select	&#x3c;字段1&#x3e; , &#x3c;字段2&#x3e; , &#x3c;字段3&#x3e; , &#x3c;字段4&#x3e;
+into	#临时表名
+from	&#x3c;表1&#x3e; a , &#x3c;表2&#x3e; b
+where	a.&#x3c;字段1&#x3e; = b.&#x3c;字段1&#x3e;
+and	a.&#x3c;字段2&#x3e; = b.&#x3c;字段2&#x3e;
+order by &#x3c;排序字段&#x3e; 
+
+
+-- 删除临时表
+drop table #临时表名'/>
+		<z:row id='E0D32DAE-BDE2-43EB-B0F1-240715449820' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table specifying filegroups'
+			 SQLScript='-- =============================================
+-- Create table specifying filegroups
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND 	  type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+CREATE TABLE &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; &#x3c;datatype_for_column_1, , int&#x3e; NOT NULL, 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, text|ntext|image, text&#x3e; )
+ON &#x3c;file_group_name_1, , [PRIMARY]&#x3e;
+TEXTIMAGE_ON &#x3c;file_group_name_2, , [PRIMARY]&#x3e;
+GO
+
+'/>
+		<z:row id='D6DE2400-FE9E-4AEB-9B13-18CED3E599E1' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table with Computed column'
+			 SQLScript='-- =============================================
+-- Create table with Computed column
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND 	  type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+CREATE TABLE &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; &#x3c;datatype_for_column_1, , int&#x3e; NOT NULL, 
+&#x3c;column_2, sysname, c2&#x3e; AS &#x3c;expression, , 2*c1&#x3e;)
+GO
+
+'/>
+		<z:row id='29EFB901-B9C6-49F3-8888-151AF97775A8' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table with IDENTITY column'
+			 SQLScript='-- =============================================
+-- Create table with IDENTITY column
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND 	  type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+create table &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; &#x3c;datatype_for_column_1, , int&#x3e; IDENTITY(&#x3c;seed, , 100&#x3e;, &#x3c;increment, , 1&#x3e;), 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, , int&#x3e; NOT NULL)
+GO
+
+'/>
+		<z:row id='0BCBEC67-2530-474E-99E4-B53F97D3CDD4' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table with ROWGUIDCOL column'
+			 SQLScript='-- =============================================
+-- Create table with ROWGUIDCOL column
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND 	  type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+create table &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; uniqueidentifier ROWGUIDCOL 
+	CONSTRAINT &#x3c;constraint_name, sysname, const_c1&#x3e; DEFAULT NEWID(), 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, , int&#x3e; NOT NULL)
+GO
+
+'/>
+		<z:row id='B993E127-820C-4DC7-A1B6-02E18516B5A0' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='Create table with ROWGUIDCOL column'
+			 SQLScript='-- =============================================
+-- Create table with ROWGUIDCOL column
+-- =============================================
+IF EXISTS (SELECT name 
+	   FROM   sysobjects 
+	   WHERE  name = N&#x27;&#x3c;table_name, sysname, test_table&#x3e;&#x27; 
+	   AND 	  type = &#x27;U&#x27;)
+    DROP TABLE &#x3c;table_name, sysname, test_table&#x3e;
+GO
+
+create table &#x3c;table_name, sysname, test_table&#x3e; (
+&#x3c;column_1, sysname, c1&#x3e; uniqueidentifier ROWGUIDCOL 
+	CONSTRAINT &#x3c;constraint_name, sysname, const_c1&#x3e; DEFAULT NEWID(), 
+&#x3c;column_2, sysname, c2&#x3e; &#x3c;datatype_for_column_2, , int&#x3e; NOT NULL)
+GO
+
+'/>
+		<z:row id='17AD612F-AAB1-45A5-8B58-3F0A622B4AA4' parentid='AAF51289-E2C9-4BC5-94E2-D372EE542000' Title='新SQL模板'/>
+		<z:row id='6193ACA8-7BD2-4C2F-8F29-5B472C2D45E6' parentid='02F98C8E-4840-4830-B41A-4E5289696B20' Title='新SQL模板'/>
+	</rs:insert>
+</rs:data>
+</xml>
