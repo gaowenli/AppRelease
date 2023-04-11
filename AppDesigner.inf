@@ -191,10 +191,6 @@
 
 #method=0 (self-upgrade)
 
-<<<<<<< HEAD
-#version=8.0.0
-=======
 #version=8.0.1
->>>>>>> 42b9b32 (AppDesigner)
 
 #forceupgrade=true
